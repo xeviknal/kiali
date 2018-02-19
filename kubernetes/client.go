@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/swift-sunshine/swscore/models"
 	"k8s.io/api/core/v1"
 
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -99,16 +100,13 @@ func NewClient() (*IstioClient, error) {
 
 // It returns a list of all namespaces/projects of the cluster.
 // It returns an error on any problem.
-func (in *IstioClient) GetNamespaces() ([]string, error) {
+func (in *IstioClient) GetNamespaces() ([]models.Namespace, error) {
 	namespaces, err := in.k8s.CoreV1().Namespaces().List(emptyListOptions)
 	if err != nil {
 		return nil, err
 	}
-	names := make([]string, len(namespaces.Items))
-	for i, namespace := range namespaces.Items {
-		names[i] = namespace.Name
-	}
-	return names, nil
+
+	return models.MarshallCollection(namespaces), nil
 }
 
 // It returns a list of services for a given namespace.
