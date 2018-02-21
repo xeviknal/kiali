@@ -21,3 +21,16 @@ func ServiceList(w http.ResponseWriter, r *http.Request) {
 
 	RespondWithJSON(w, http.StatusOK, models.ServiceList{namespace, services})
 }
+
+func ServiceDetails(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	serviceDetails, err := models.GetServiceDetails(params["namespace"], params["service"])
+	if err != nil {
+		log.Error(err)
+		RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	RespondWithJSON(w, http.StatusOK, serviceDetails)
+}
