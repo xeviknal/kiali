@@ -5,16 +5,24 @@ import (
 	"k8s.io/api/core/v1"
 )
 
-type Service struct {
+type ServiceOverview struct {
 	Name string `json:"name"`
 }
 
 type ServiceList struct {
-	Namespace Namespace `json:"namespace"`
-	Service   []Service `json:"services"`
+	Namespace Namespace         `json:"namespace"`
+	Service   []ServiceOverview `json:"services"`
 }
 
-func GetServicesByNamespace(namespaceName string) ([]Service, error) {
+type Service struct {
+	Name      string            `json:"name"`
+	Namespace Namespace         `json:"namespace"`
+	Labels    map[string]string `json:"labels"`
+	Type      string            `json:"type"`
+	Ip        string            `json:"ip"`
+}
+
+func GetServicesByNamespace(namespaceName string) ([]ServiceOverview, error) {
 	istioClient, err := kubernetes.NewClient()
 	if err != nil {
 		return nil, err
@@ -25,10 +33,10 @@ func GetServicesByNamespace(namespaceName string) ([]Service, error) {
 		return nil, err
 	}
 
-	return CastServiceCollection(services), nil
+	return CastServiceOverviewCollection(services), nil
 }
 
-func GetServiceDetails(namespaceName, serviceName string) (*kubernetes.ServiceDetails, error) {
+func GetServiceDetails(namespaceName, serviceName string) (*Service, error) {
 	istioClient, err := kubernetes.NewClient()
 	if err != nil {
 		return nil, err
@@ -39,21 +47,32 @@ func GetServiceDetails(namespaceName, serviceName string) (*kubernetes.ServiceDe
 		return nil, err
 	}
 
-	return serviceDetails, nil
+	return CastService(serviceDetails), nil
 }
 
-func CastServiceCollection(sl *v1.ServiceList) []Service {
-	services := make([]Service, len(sl.Items))
+func CastServiceOverviewCollection(sl *v1.ServiceList) []ServiceOverview {
+	services := make([]ServiceOverview, len(sl.Items))
 	for i, item := range sl.Items {
-		services[i] = CastService(item)
+		services[i] = CastServiceOverview(item)
 	}
 
 	return services
 }
 
-func CastService(s v1.Service) Service {
-	service := Service{}
+func CastServiceOverview(s v1.Service) ServiceOverview {
+	service := ServiceOverview{}
 	service.Name = s.Name
+
+	return service
+}
+
+func CastService(s *kubernetes.ServiceDetails) *Service {
+	service := &Service{}
+	service.Name = s.Service.Name
+	service.Namespace = Namespace{s.Service.Namespace}
+	service.Labels = s.Service.Labels
+	service.Type = string(s.Service.Spec.Type)
+	service.Ip = s.Service.Spec.ClusterIP
 
 	return service
 }
