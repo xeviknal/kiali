@@ -28,6 +28,20 @@ func GetServicesByNamespace(namespaceName string) ([]Service, error) {
 	return CastServiceCollection(services), nil
 }
 
+func GetServiceDetails(namespaceName, serviceName string) (*kubernetes.ServiceDetails, error) {
+	istioClient, err := kubernetes.NewClient()
+	if err != nil {
+		return nil, err
+	}
+
+	serviceDetails, err := istioClient.GetServiceDetails(namespaceName, serviceName)
+	if err != nil {
+		return nil, err
+	}
+
+	return serviceDetails, nil
+}
+
 func CastServiceCollection(sl *v1.ServiceList) []Service {
 	services := make([]Service, len(sl.Items))
 	for i, item := range sl.Items {
