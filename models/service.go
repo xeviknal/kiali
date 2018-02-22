@@ -20,6 +20,7 @@ type Service struct {
 	Labels    map[string]string `json:"labels"`
 	Type      string            `json:"type"`
 	Ip        string            `json:"ip"`
+	Ports     []Port            `json:"ports"`
 }
 
 func GetServicesByNamespace(namespaceName string) ([]ServiceOverview, error) {
@@ -73,6 +74,7 @@ func CastService(s *kubernetes.ServiceDetails) *Service {
 	service.Labels = s.Service.Labels
 	service.Type = string(s.Service.Spec.Type)
 	service.Ip = s.Service.Spec.ClusterIP
+	service.Ports = CastPortCollection(s.Service.Spec.Ports)
 
 	return service
 }
