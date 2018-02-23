@@ -15,14 +15,15 @@ type ServiceList struct {
 }
 
 type Service struct {
-	Name      string            `json:"name"`
-	Namespace Namespace         `json:"namespace"`
-	Labels    map[string]string `json:"labels"`
-	Type      string            `json:"type"`
-	Ip        string            `json:"ip"`
-	Ports     Ports             `json:"ports"`
-	Endpoints Endpoints         `json:"endpoints"`
-	Pods      Pods              `json:"pods"`
+	Name       string            `json:"name"`
+	Namespace  Namespace         `json:"namespace"`
+	Labels     map[string]string `json:"labels"`
+	Type       string            `json:"type"`
+	Ip         string            `json:"ip"`
+	Ports      Ports             `json:"ports"`
+	Endpoints  Endpoints         `json:"endpoints"`
+	Pods       Pods              `json:"pods"`
+	RouteRules RouteRules        `json:"route_rules"`
 }
 
 func GetServicesByNamespace(namespaceName string) ([]ServiceOverview, error) {
@@ -50,7 +51,12 @@ func GetServiceDetails(namespaceName, serviceName string) (*Service, error) {
 		return nil, err
 	}
 
-	return CastService(serviceDetails), nil
+	istioDetails, err := istioClient.GetIstioDetails(namespaceName, serviceName)
+	if err != nil {
+		return nil, err
+	}
+
+	return CastService(serviceDetails, istioDetails), nil
 }
 
 func CastServiceOverviewCollection(sl *v1.ServiceList) []ServiceOverview {
@@ -69,7 +75,7 @@ func CastServiceOverview(s v1.Service) ServiceOverview {
 	return service
 }
 
-func CastService(s *kubernetes.ServiceDetails) *Service {
+func CastService(s *kubernetes.ServiceDetails, i *kubernetes.IstioDetails) *Service {
 	service := &Service{}
 	service.Name = s.Service.Name
 	service.Namespace = Namespace{s.Service.Namespace}
@@ -79,6 +85,7 @@ func CastService(s *kubernetes.ServiceDetails) *Service {
 	(&service.Ports).Parse(s.Service.Spec.Ports)
 	(&service.Endpoints).Parse(s.Endpoints)
 	(&service.Pods).Parse(s.Pods)
+	(&service.RouteRules).Parse(i.RouteRules)
 
 	return service
 }
