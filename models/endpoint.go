@@ -9,6 +9,10 @@ type Endpoint struct {
 }
 
 func (endpoints *Endpoints) Parse(es *v1.Endpoints) {
+	if es == nil {
+		return
+	}
+
 	for _, subset := range es.Subsets {
 		endpoint := Endpoint{}
 		endpoint.Parse(subset)

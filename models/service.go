@@ -49,27 +49,14 @@ func GetServiceDetails(namespaceName, serviceName string) (*Service, error) {
 		return nil, err
 	}
 
-	prometheusClient, err := prometheus.NewClient()
-	if err != nil {
-		return nil, err
-	}
+	service := Service{}
+	service.Name = serviceName
+	service.Namespace = Namespace{namespaceName}
+	service.setKubernetesDetails(istioClient)
+	service.setIstioDetails(istioClient)
+	service.setPrometheusDetails()
 
-	serviceDetails, err := istioClient.GetServiceDetails(namespaceName, serviceName)
-	if err != nil {
-		return nil, err
-	}
-
-	istioDetails, err := istioClient.GetIstioDetails(namespaceName, serviceName)
-	if err != nil {
-		return nil, err
-	}
-
-	incomeServices, err := prometheusClient.GetSourceServices(namespaceName, serviceName)
-	if err != nil {
-		return nil, err
-	}
-
-	return CastService(serviceDetails, istioDetails, incomeServices), nil
+	return &service, nil
 }
 
 func CastServiceOverviewCollection(sl *v1.ServiceList) []ServiceOverview {
@@ -88,18 +75,53 @@ func CastServiceOverview(s v1.Service) ServiceOverview {
 	return service
 }
 
-func CastService(s *kubernetes.ServiceDetails, i *kubernetes.IstioDetails, dependencies map[string]string) *Service {
-	service := &Service{}
-	service.Name = s.Service.Name
-	service.Namespace = Namespace{s.Service.Namespace}
-	service.Labels = s.Service.Labels
-	service.Type = string(s.Service.Spec.Type)
-	service.Ip = s.Service.Spec.ClusterIP
-	service.Dependencies = dependencies
-	(&service.Ports).Parse(s.Service.Spec.Ports)
-	(&service.Endpoints).Parse(s.Endpoints)
-	(&service.Pods).Parse(s.Pods)
-	(&service.RouteRules).Parse(i.RouteRules)
+func (s *Service) setKubernetesDetails(c *kubernetes.IstioClient) error {
 
-	return service
+	serviceDetails, err := c.GetServiceDetails(s.Namespace.Name, s.Name)
+	if err != nil {
+		return err
+	}
+
+	s.Labels = serviceDetails.Service.Labels
+	s.Type = string(serviceDetails.Service.Spec.Type)
+	s.Ip = serviceDetails.Service.Spec.ClusterIP
+	(&s.Ports).Parse(serviceDetails.Service.Spec.Ports)
+	(&s.Endpoints).Parse(serviceDetails.Endpoints)
+	(&s.Pods).Parse(serviceDetails.Pods)
+
+	return nil
+}
+
+func (s *Service) setIstioDetails(c *kubernetes.IstioClient) error {
+
+	istioDetails, err := c.GetIstioDetails(s.Namespace.Name, s.Name)
+	if err != nil {
+		return err
+	}
+
+	(&s.RouteRules).Parse(istioDetails.RouteRules)
+	return nil
+}
+
+func (s *Service) setPrometheusDetails() error {
+
+	prometheusClient, err := prometheus.NewClient()
+	if err != nil {
+		return err
+	}
+
+	incomeServices, err := prometheusClient.GetSourceServices(s.Namespace.Name, s.Name)
+	if err != nil {
+		return err
+	}
+
+	s.Dependencies = incomeServices
+
+	return nil
+}
+
+func CastService(dependencies map[string]string) *Service {
+	service := Service{}
+
+	return &service
 }

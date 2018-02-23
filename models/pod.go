@@ -9,6 +9,10 @@ type Pod struct {
 }
 
 func (pods *Pods) Parse(ps []*v1.Pod) {
+	if ps == nil {
+		return
+	}
+
 	for _, pod := range ps {
 		casted := Pod{}
 		casted.Parse(pod)
