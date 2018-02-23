@@ -20,7 +20,7 @@ type Service struct {
 	Labels    map[string]string `json:"labels"`
 	Type      string            `json:"type"`
 	Ip        string            `json:"ip"`
-	Ports     []Port            `json:"ports"`
+	Ports     Ports             `json:"ports"`
 	Endpoints Endpoints         `json:"endpoints"`
 	Pods      Pods              `json:"pods"`
 }
@@ -76,7 +76,7 @@ func CastService(s *kubernetes.ServiceDetails) *Service {
 	service.Labels = s.Service.Labels
 	service.Type = string(s.Service.Spec.Type)
 	service.Ip = s.Service.Spec.ClusterIP
-	service.Ports = CastServicePortCollection(s.Service.Spec.Ports)
+	(&service.Ports).Parse(s.Service.Spec.Ports)
 	(&service.Endpoints).Parse(s.Endpoints)
 	(&service.Pods).Parse(s.Pods)
 
