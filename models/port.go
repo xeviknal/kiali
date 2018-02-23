@@ -9,22 +9,18 @@ type Port struct {
 	Port     int32  `json:"port"`
 }
 
-func CastServicePortCollection(ps []v1.ServicePort) []Port {
-	ports := make([]Port, len(ps))
-	for i, servicePort := range ps {
-		ports[i] = CastServicePort(servicePort)
+func (ports *Ports) Parse(ps []v1.ServicePort) {
+	for _, servicePort := range ps {
+		port := Port{}
+		port.Parse(servicePort)
+		*ports = append(*ports, port)
 	}
-
-	return ports
 }
 
-func CastServicePort(p v1.ServicePort) Port {
-	port := Port{}
+func (port *Port) Parse(p v1.ServicePort) {
 	port.Name = p.Name
 	port.Protocol = string(p.Protocol)
 	port.Port = p.Port
-
-	return port
 }
 
 func (ports *Ports) ParseEndpointPorts(ps []v1.EndpointPort) {
