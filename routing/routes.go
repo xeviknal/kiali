@@ -26,6 +26,27 @@ func NewRoutes() (r *Routes) {
 	r = new(Routes)
 
 	r.Routes = []Route{
+		// swagger:route GET /namespaces/graph/authorization graphs graphNamespaces
+		// ---
+		// The backing JSON for a namespaces graph.
+		//
+		//     Produces:
+		//     - application/json
+		//
+		//     Schemes: http, https
+		//
+		// responses:
+		//      400: badRequestError
+		//      500: internalError
+		//      200: graphResponse
+		//
+		{
+			"GraphNamespaceAuthorization",
+			"GET",
+			"/api/namespaces/graph/authorization",
+			handlers.Authorization,
+			true,
+		},
 		// swagger:route GET / Root
 		// ---
 		// Endpoint to get the health of Kiali
