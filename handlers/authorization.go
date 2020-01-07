@@ -8,6 +8,11 @@ import (
 	"github.com/kiali/kiali/graph/api"
 )
 
+type AuthorizationResponse struct {
+	Payload interface{}
+	Policies interface{}
+}
+
 func Authorization(w http.ResponseWriter, r *http.Request) {
 	defer handlePanic(w)
 
@@ -18,8 +23,11 @@ func Authorization(w http.ResponseWriter, r *http.Request) {
 	business, err := getBusiness(r)
 	graph.CheckError(err)
 
+	response := AuthorizationResponse{}
 	code, payload := api.GraphNamespaces(business, o)
-	autothorization.BuildAuthorizationGraph(payload)
+	policies := autothorization.BuildAuthorizationGraph(o.Namespace, payload)
+	response.Payload = payload
+	response.Policies = policies
 
-	respond(w, code, payload)
+	respond(w, code, response)
 }

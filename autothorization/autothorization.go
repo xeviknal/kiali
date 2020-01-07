@@ -2,6 +2,8 @@ package autothorization
 
 import (
 	"fmt"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"github.com/kiali/kiali/graph/config/cytoscape"
 	"github.com/kiali/kiali/models"
 )
@@ -12,7 +14,7 @@ type IncommingEdges []*cytoscape.EdgeData
 type IncomingTrafficMap map[AppName]IncommingEdges
 type WorkloadAppMap map[TargetId]AppName
 
-func BuildAuthorizationGraph(g interface{}) models.AuthorizationPolicies {
+func BuildAuthorizationGraph(ns string, g interface{}) models.AuthorizationPoliciesFull {
 	graphConfig := g.(cytoscape.Config)
 	itm := IncomingTrafficMap{}
 	wam := WorkloadAppMap{}
@@ -39,14 +41,27 @@ func BuildAuthorizationGraph(g interface{}) models.AuthorizationPolicies {
 
 	fmt.Println(itm)
 
-	policies := make(models.AuthorizationPolicies, 0)
+	policies := make(models.AuthorizationPoliciesFull, 0)
 	for app := range itm {
-		policies := append(policies, buildPolicy(app, itm))
+		policies = append(policies, buildPolicy(string(app), itm, ns))
 	}
 
 	return policies
 }
 
-func buildPolicy(appName string, itm IncomingTrafficMap) models.AuthorizationPolicy {
-	return models.AuthorizationPolicy{}
+func buildPolicy(appName string, itm IncomingTrafficMap, ns string) models.AuthorizationPolicyFull {
+	ap := models.AuthorizationPolicyFull {
+		Metadata: v1.ObjectMeta {
+			Name: fmt.Sprintf("authz-policy-%s", appName),
+			Namespace: ns,
+		},
+		Spec: models.AuthorizationPolicySpec {
+			Selector: models.WorkloadSelector {
+				MatchLabels: map[string]string {
+					"app": appName,
+				},
+			},
+		},
+	}
+	return ap
 }
