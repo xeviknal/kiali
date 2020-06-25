@@ -120,7 +120,7 @@ var checkDescriptors = map[string]IstioCheck{
 		Severity: ErrorSeverity,
 	},
 	"authorizationpolicy.mtls.needstobeenabled": {
-		Message: "KIA0105 AuthorizationPolicies needs mTLS enabled",
+		Message:  "KIA0105 AuthorizationPolicies needs mTLS enabled",
 		Severity: ErrorSeverity,
 	},
 	"destinationrules.multimatch": {

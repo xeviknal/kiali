@@ -115,7 +115,7 @@ func mtlsCheckerTestPrep(scenario string, autoMtls bool, t *testing.T) models.Is
 	}
 
 	validations := MtlsEnabledChecker{
-		Namespace: "bookinfo",
+		Namespace:             "bookinfo",
 		AuthorizationPolicies: loader.GetResources("AuthorizationPolicy"),
 		MtlsDetails: kubernetes.MTLSDetails{
 			DestinationRules:        loader.GetResources("DestinationRule"),
