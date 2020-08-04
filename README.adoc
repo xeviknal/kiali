@@ -1,9 +1,15 @@
 = Kiali image:https://img.shields.io/twitter/url/http/shields.io.svg?style=social["Tweet about Kiali", link="https://twitter.com/intent/tweet?text=Learn%20what%20your%20Istio-Mesh%20is%20doing.%20Visit%20https://www.kiali.io/%20and%20@kiali_project"]
+:icons: font
 :toc: macro
 :toc-title:
 
 image:https://travis-ci.org/kiali/kiali.svg["Build Status", link="https://travis-ci.org/kiali/kiali"]
 image:https://img.shields.io/badge/license-Apache2-blue.svg["Apache 2.0 license", link="LICENSE"]
+icon:medium[,link=https://medium.com/kialiProject, role=role-black]
+icon:twitter[,link=https://twitter.com/kialiProject]
+icon:youtube-play[,link=https://www.youtube.com/channel/UCcm2NzDN_UCZKk2yYmOpc5w]
+icon:comment[,link=https://webchat.freenode.net/?channels=%23kiali]
+icon:calendar[,link=https://bit.ly/kiali-calendar]
 
 == Introduction
 
