@@ -66,10 +66,28 @@ type WorkloadHealth struct {
 // 	desired = 1, current = 10, available = 0 would means that a user scaled down a workload from 10 to 1
 //  but in the operaton 10 pods showed problems, so no pod is available/ready but user will see 10 pods under a workload
 type WorkloadStatus struct {
-	Name              string `json:"name"`
-	DesiredReplicas   int32  `json:"desiredReplicas"`
-	CurrentReplicas   int32  `json:"currentReplicas"`
-	AvailableReplicas int32  `json:"availableReplicas"`
+	Name              string        `json:"name"`
+	DesiredReplicas   int32         `json:"desiredReplicas"`
+	CurrentReplicas   int32         `json:"currentReplicas"`
+	AvailableReplicas int32         `json:"availableReplicas"`
+	ProxyStatus       []ProxyStatus `json:"proxyStatus"`
+}
+
+type ProxyStatuses string
+
+const (
+	Synced  ProxyStatuses = "Synced"
+	NotSent ProxyStatuses = "NOT_SENT"
+	Stale   ProxyStatuses = "Stale"
+	StaleNa ProxyStatuses = "Stale (Never Acknowledged)"
+)
+
+// ProxyStatus gives the sync status of the sidecar proxy.
+// In healthy scenarios all variables should be true.
+// If at least one variable is false, then the proxy isn't fully sync'ed with pilot.
+type ProxyStatus struct {
+	Component string        `json:"component"`
+	Status    ProxyStatuses `json:"status"`
 }
 
 // RequestHealth holds several stats about recent request errors
@@ -109,4 +127,18 @@ func aggregate(sample *model.Sample, requests map[string]map[string]float64) {
 	} else {
 		requests[protocol][code] = float64(sample.Value)
 	}
+}
+
+func (ws Workloads) CastWorkloadStatuses() []WorkloadStatus {
+	statuses := make([]WorkloadStatus, 0)
+	for _, w := range ws {
+		status := WorkloadStatus{
+			Name:              w.Name,
+			DesiredReplicas:   w.DesiredReplicas,
+			CurrentReplicas:   w.CurrentReplicas,
+			AvailableReplicas: w.AvailableReplicas}
+		statuses = append(statuses, status)
+
+	}
+	return statuses
 }

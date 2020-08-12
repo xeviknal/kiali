@@ -28,3 +28,8 @@ func (o *K8SClientMock) UpdateIstioObject(api, namespace, resourceType, name, js
 	args := o.Called(api, namespace, resourceType, name, jsonPatch)
 	return args.Get(0).(kubernetes.IstioObject), args.Error(1)
 }
+
+func (o *K8SClientMock) GetProxyStatus() ([]*kubernetes.WriterStatus, error) {
+	args := o.Called()
+	return args.Get(0).([]*kubernetes.WriterStatus), args.Error(1)
+}

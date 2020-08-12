@@ -75,7 +75,12 @@ func (in *HealthService) getAppHealth(namespace, app, rateInterval string, query
 	}
 
 	// Deployment status
-	health.WorkloadStatuses = castWorkloadStatuses(ws)
+	health.WorkloadStatuses = ws.CastWorkloadStatuses()
+
+	// Proxy status
+	if fetchRate {
+		health.WorkloadStatuses = in.businessLayer.ProxyStatus.GetWorkloadProxyStatuses(namespace, health.WorkloadStatuses)
+	}
 
 	return health, errRate
 }
@@ -105,6 +110,10 @@ func (in *HealthService) GetWorkloadHealth(namespace, workload, workloadType, ra
 		}, nil
 	}
 
+	// Add Proxy Status info
+	status = in.businessLayer.ProxyStatus.GetWorkloadProxyStatus(workload, namespace, status)
+
+	// Add Telemetry info
 	rate, err := in.getWorkloadRequestsHealth(namespace, workload, rateInterval, queryTime)
 	return models.WorkloadHealth{
 		WorkloadStatus: status,
@@ -137,7 +146,7 @@ func (in *HealthService) getNamespaceAppHealth(namespace string, appEntities nam
 			h := models.EmptyAppHealth()
 			allHealth[app] = &h
 			if entities != nil {
-				h.WorkloadStatuses = castWorkloadStatuses(entities.Workloads)
+				h.WorkloadStatuses = entities.Workloads.CastWorkloadStatuses()
 				for _, w := range entities.Workloads {
 					if w.IstioSidecar {
 						fetchRates = true
@@ -318,18 +327,4 @@ func (in *HealthService) getWorkloadRequestsHealth(namespace, workload, rateInte
 		rqHealth.AggregateOutbound(sample)
 	}
 	return rqHealth, err
-}
-
-func castWorkloadStatuses(ws models.Workloads) []models.WorkloadStatus {
-	statuses := make([]models.WorkloadStatus, 0)
-	for _, w := range ws {
-		status := models.WorkloadStatus{
-			Name:              w.Name,
-			DesiredReplicas:   w.DesiredReplicas,
-			CurrentReplicas:   w.CurrentReplicas,
-			AvailableReplicas: w.AvailableReplicas}
-		statuses = append(statuses, status)
-
-	}
-	return statuses
 }
