@@ -67,7 +67,7 @@ func TestGetAppHealth(t *testing.T) {
 	k8s.On("GetProject", mock.AnythingOfType("string")).Return(&osproject_v1.Project{}, nil)
 	k8s.On("GetDeployments", "ns").Return(fakeDeploymentsHealthReview(), nil)
 	k8s.On("GetPods", "ns", "app=reviews").Return(fakePodsHealthReview(), nil)
-	k8s.On("GetProxyStatus").Return([]*kubernetes.WriterStatus{}, nil)
+	k8s.On("GetProxyStatus").Return([]*kubernetes.ProxyStatus{}, nil)
 
 	hs := HealthService{k8s: k8s, prom: prom, businessLayer: NewWithBackends(k8s, prom, nil)}
 
@@ -110,7 +110,7 @@ func TestGetWorkloadHealth(t *testing.T) {
 	k8s.On("GetProject", mock.AnythingOfType("string")).Return(&osproject_v1.Project{}, nil)
 	k8s.On("GetDeployment", "ns", "reviews-v1").Return(&fakeDeploymentsHealthReview()[0], nil)
 	k8s.On("GetPods", "ns", "").Return(fakePodsHealthReview(), nil)
-	k8s.On("GetProxyStatus").Return([]*kubernetes.WriterStatus{}, nil)
+	k8s.On("GetProxyStatus").Return([]*kubernetes.ProxyStatus{}, nil)
 
 	queryTime := time.Date(2017, 01, 15, 0, 0, 0, 0, time.UTC)
 	prom.MockWorkloadRequestRates("ns", "reviews-v1", otherRatesIn, otherRatesOut)

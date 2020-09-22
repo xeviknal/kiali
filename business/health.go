@@ -79,7 +79,7 @@ func (in *HealthService) getAppHealth(namespace, app, rateInterval string, query
 
 	// Proxy status
 	if fetchRate {
-		health.WorkloadStatuses = in.businessLayer.ProxyStatus.GetWorkloadProxyStatuses(namespace, health.WorkloadStatuses)
+		health.WorkloadStatuses = in.businessLayer.ProxyStatus.GetWorkloadsProxyStatuses(namespace, health.WorkloadStatuses)
 	}
 
 	return health, errRate
@@ -131,6 +131,7 @@ func (in *HealthService) GetNamespaceAppHealth(namespace, rateInterval string, q
 	if err != nil {
 		return nil, err
 	}
+
 	return in.getNamespaceAppHealth(namespace, appEntities, rateInterval, queryTime)
 }
 
@@ -157,13 +158,19 @@ func (in *HealthService) getNamespaceAppHealth(namespace string, appEntities nam
 		}
 	}
 
-	var errRate error
+	var errRate, errProxy error
 	if fetchRates {
 		// Fetch services requests rates
 		rates, err := in.prom.GetAllRequestRates(namespace, rateInterval, queryTime)
 		errRate = err
 		// Fill with collected request rates
 		fillAppRequestRates(allHealth, rates)
+
+		// Add Proxy Statuses
+		allHealth, errProxy = in.businessLayer.ProxyStatus.GetNamespaceAppProxyStatus(namespace, allHealth)
+		if errProxy != nil {
+			errRate = errProxy
+		}
 	}
 
 	return allHealth, errRate
@@ -254,6 +261,9 @@ func (in *HealthService) getNamespaceWorkloadHealth(namespace string, ws models.
 		rates, _ := in.prom.GetAllRequestRates(namespace, rateInterval, queryTime)
 		// Fill with collected request rates
 		fillWorkloadRequestRates(allHealth, rates)
+
+		// Fetch Proxy statuses
+		allHealth, _ = in.businessLayer.ProxyStatus.GetNamespaceWorkloadProxyStatus(namespace, allHealth)
 	}
 
 	return allHealth

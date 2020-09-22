@@ -228,7 +228,7 @@ func (in *K8SClient) GetIstioObject(namespace, resourceType, name string) (Istio
 	return io, nil
 }
 
-type WriterStatus struct {
+type ProxyStatus struct {
 	pilot string
 	SyncStatus
 }
@@ -248,7 +248,7 @@ type SyncStatus struct {
 	EndpointAcked string `json:"endpoint_acked,omitempty"`
 }
 
-func (in *K8SClient) GetProxyStatus() ([]*WriterStatus, error) {
+func (in *K8SClient) GetProxyStatus() ([]*ProxyStatus, error) {
 	c := config.Get()
 	istiods, err := in.GetPods(c.IstioNamespace, labels.Set(map[string]string{
 		c.IstioLabels.AppLabelName: "istiod",
@@ -284,10 +284,10 @@ func (in *K8SClient) GetProxyStatus() ([]*WriterStatus, error) {
 	return getStatus(result)
 }
 
-func getStatus(statuses map[string][]byte) ([]*WriterStatus, error) {
-	var fullStatus []*WriterStatus
+func getStatus(statuses map[string][]byte) ([]*ProxyStatus, error) {
+	var fullStatus []*ProxyStatus
 	for pilot, status := range statuses {
-		var ss []*WriterStatus
+		var ss []*ProxyStatus
 		err := json.Unmarshal(status, &ss)
 		if err != nil {
 			return nil, err

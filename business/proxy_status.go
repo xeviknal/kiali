@@ -26,7 +26,7 @@ func (in *ProxyStatus) GetWorkloadProxyStatus(workloadName, namespace string, wo
 	return workloadStatus
 }
 
-func (in *ProxyStatus) GetWorkloadProxyStatuses(namespace string, workloadStatuses []models.WorkloadStatus) []models.WorkloadStatus {
+func (in *ProxyStatus) GetWorkloadsProxyStatuses(namespace string, workloadStatuses []models.WorkloadStatus) []models.WorkloadStatus {
 	res := make([]models.WorkloadStatus, 0, len(workloadStatuses))
 
 	proxyStatuses, err := in.k8s.GetProxyStatus()
@@ -45,7 +45,48 @@ func (in *ProxyStatus) GetWorkloadProxyStatuses(namespace string, workloadStatus
 	return res
 }
 
-func getProxyStatusByName(name, namespace string, proxyStatus []*kubernetes.WriterStatus) *kubernetes.WriterStatus {
+func (in *ProxyStatus) GetNamespaceAppProxyStatus(namespace string, appsWorkloads models.NamespaceAppHealth) (models.NamespaceAppHealth, error) {
+	proxyStatuses, err := in.k8s.GetProxyStatus()
+	if err != nil {
+		return appsWorkloads, err
+	}
+
+	for app, workloadStatus := range appsWorkloads {
+		workloadStatuses := make([]models.WorkloadStatus, 0, len(workloadStatus.WorkloadStatuses))
+
+		for _, ws := range workloadStatus.WorkloadStatuses {
+			ps := getProxyStatusByName(ws.Name, namespace, proxyStatuses)
+			if ps != nil {
+				ws.ProxyStatus = castProxyStatus(*ps)
+			}
+			workloadStatuses = append(workloadStatuses, ws)
+		}
+		appsWorkloads[app].WorkloadStatuses = workloadStatuses
+	}
+
+	return appsWorkloads, nil
+}
+
+func (in *ProxyStatus) GetNamespaceWorkloadProxyStatus(namespace string, workloads models.NamespaceWorkloadHealth) (models.NamespaceWorkloadHealth, error) {
+	res := models.NamespaceWorkloadHealth{}
+
+	proxyStatuses, err := in.k8s.GetProxyStatus()
+	if err != nil {
+		return workloads, err
+	}
+
+	for wl, ws := range workloads {
+		ps := getProxyStatusByName(wl, namespace, proxyStatuses)
+		if ps != nil {
+			ws.WorkloadStatus.ProxyStatus = castProxyStatus(*ps)
+		}
+		res[wl] = ws
+	}
+
+	return res, nil
+}
+
+func getProxyStatusByName(name, namespace string, proxyStatus []*kubernetes.ProxyStatus) *kubernetes.ProxyStatus {
 	for _, ps := range proxyStatus {
 		if strings.HasPrefix(ps.ProxyID, name) && strings.HasSuffix(ps.ProxyID, namespace) {
 			return ps
@@ -54,7 +95,7 @@ func getProxyStatusByName(name, namespace string, proxyStatus []*kubernetes.Writ
 	return nil
 }
 
-func castProxyStatus(ps kubernetes.WriterStatus) []models.ProxyStatus {
+func castProxyStatus(ps kubernetes.ProxyStatus) []models.ProxyStatus {
 	statuses := make([]models.ProxyStatus, 0, 4)
 
 	r := reflect.ValueOf(ps)
