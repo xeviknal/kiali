@@ -64,7 +64,6 @@ func (in *HealthService) getAppHealth(namespace, app, rateInterval string, query
 		if w.IstioSidecar {
 			wsNames = append(wsNames, w.Name)
 			hasSidecar = true
-			break
 		}
 	}
 
@@ -166,7 +165,6 @@ func (in *HealthService) getNamespaceAppHealth(namespace string, appEntities nam
 					if w.IstioSidecar {
 						wsNames = append(wsNames, w.Name)
 						sidecarPresent = true
-						break
 					}
 				}
 			}
