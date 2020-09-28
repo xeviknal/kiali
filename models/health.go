@@ -20,7 +20,7 @@ type ServiceHealth struct {
 
 // AppHealth contains aggregated health from various sources, for a given app
 type AppHealth struct {
-	WorkloadStatuses []WorkloadStatus `json:"workloadStatuses"`
+	WorkloadStatuses []*WorkloadStatus `json:"workloadStatuses"`
 	Requests         RequestHealth    `json:"requests"`
 }
 
@@ -31,7 +31,7 @@ func NewEmptyRequestHealth() RequestHealth {
 // EmptyAppHealth create an empty AppHealth
 func EmptyAppHealth() AppHealth {
 	return AppHealth{
-		WorkloadStatuses: []WorkloadStatus{},
+		WorkloadStatuses: []*WorkloadStatus{},
 		Requests:         NewEmptyRequestHealth(),
 	}
 }
@@ -52,7 +52,7 @@ func EmptyWorkloadHealth() *WorkloadHealth {
 
 // WorkloadHealth contains aggregated health from various sources, for a given workload
 type WorkloadHealth struct {
-	WorkloadStatus WorkloadStatus `json:"workloadStatus"`
+	WorkloadStatus *WorkloadStatus `json:"workloadStatus"`
 	Requests       RequestHealth  `json:"requests"`
 }
 
@@ -129,10 +129,10 @@ func aggregate(sample *model.Sample, requests map[string]map[string]float64) {
 	}
 }
 
-func (ws Workloads) CastWorkloadStatuses() []WorkloadStatus {
-	statuses := make([]WorkloadStatus, 0)
+func (ws Workloads) CastWorkloadStatuses() []*WorkloadStatus {
+	statuses := make([]*WorkloadStatus, 0)
 	for _, w := range ws {
-		status := WorkloadStatus{
+		status := &WorkloadStatus{
 			Name:              w.Name,
 			DesiredReplicas:   w.DesiredReplicas,
 			CurrentReplicas:   w.CurrentReplicas,
