@@ -14,50 +14,53 @@ type ProxyStatus struct {
 }
 
 // GetWorkloadProxyStatus returns the proxy status of the workload defined by the name and namespace
-func (in *ProxyStatus) GetWorkloadProxyStatus(workloadName, namespace string) ([]models.ProxyStatus, error) {
-	var workloadProxyStatuses []models.ProxyStatus
-
+func (in *ProxyStatus) GetWorkloadProxyStatus(workloadName, namespace string) (int32, error) {
 	proxyStatuses, err := in.k8s.GetProxyStatus()
 	if err != nil {
-		return workloadProxyStatuses, err
+		return int32(0), err
 	}
 
-	ps := getProxyStatusByName(workloadName, namespace, proxyStatuses)
-	if ps != nil {
-		workloadProxyStatuses = castProxyStatus(*ps)
-	}
-
-	return workloadProxyStatuses, nil
+	return hasWorkloadProxiesSynced(getProxyStatusByName(workloadName, namespace, proxyStatuses)), nil
 }
 
 // GetWorkloadsProxyStatus returns all the proxy statuses of each workload with name in the `workloadNames` array
 // The returning map uses as a key the name of the workload. Each value is its associated ProxyStatus.
-func (in *ProxyStatus) GetWorkloadsProxyStatus(namespace string, workloadNames []string) (map[string][]models.ProxyStatus, error) {
-	res := map[string][]models.ProxyStatus{}
+func (in *ProxyStatus) GetWorkloadsProxyStatus(namespace string, workloadNames []string) (map[string]int32, error) {
+	statuses := map[string]int32{}
 
 	proxyStatuses, err := in.k8s.GetProxyStatus()
 	if err != nil {
-		return res, err
+		return map[string]int32{}, err
 	}
 
 	for _, ws := range workloadNames {
-		ps := getProxyStatusByName(ws, namespace, proxyStatuses)
-		if ps != nil {
-			res[ws] = castProxyStatus(*ps)
-		}
+		statuses[ws] = hasWorkloadProxiesSynced(getProxyStatusByName(ws, namespace, proxyStatuses))
 	}
 
-	return res, err
+	return statuses, nil
 }
 
 // getProxyStatusByName returns selects the raw ProxyStatus of the workload specified by name and namespace
-func getProxyStatusByName(name, namespace string, proxyStatus []*kubernetes.ProxyStatus) *kubernetes.ProxyStatus {
+func getProxyStatusByName(name, namespace string, proxyStatus []*kubernetes.ProxyStatus) map[string][]models.ProxyStatus {
+	workloadsStatus := map[string][]models.ProxyStatus{}
+
 	for _, ps := range proxyStatus {
 		if strings.HasPrefix(ps.ProxyID, name) && strings.HasSuffix(ps.ProxyID, namespace) {
-			return ps
+			workloadsStatus[ps.ProxyID] = castProxyStatus(*ps)
 		}
 	}
-	return nil
+
+	return workloadsStatus
+}
+
+func hasWorkloadProxiesSynced(proxyStatuses map[string][]models.ProxyStatus) int32 {
+	synced := int32(0)
+	for _, ps := range proxyStatuses {
+		if len(ps) == 0 {
+			synced = synced + 1
+		}
+	}
+	return synced
 }
 
 func castProxyStatus(ps kubernetes.ProxyStatus) []models.ProxyStatus {

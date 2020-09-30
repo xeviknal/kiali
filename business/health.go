@@ -117,7 +117,7 @@ func (in *HealthService) GetWorkloadHealth(namespace, workload, workloadType, ra
 	}
 
 	// Add Proxy Status info
-	status.ProxyStatus, err = in.businessLayer.ProxyStatus.GetWorkloadProxyStatus(workload, namespace)
+	status.SyncedProxies, err = in.businessLayer.ProxyStatus.GetWorkloadProxyStatus(workload, namespace)
 	if err != nil {
 		return models.WorkloadHealth{
 			WorkloadStatus: status,
@@ -331,23 +331,23 @@ func fillWorkloadRequestRates(allHealth models.NamespaceWorkloadHealth, rates mo
 }
 
 // fillAppProxyStatus fills the App health with the proxy status of each workload
-func fillAppProxyStatus(allHealth models.AppHealth, proxyStatuses map[string][]models.ProxyStatus) {
+func fillAppProxyStatus(allHealth models.AppHealth, proxyStatuses map[string]int32) {
 	for _, ws := range allHealth.WorkloadStatuses {
-		ws.ProxyStatus = proxyStatuses[ws.Name]
+		ws.SyncedProxies = proxyStatuses[ws.Name]
 	}
 }
 
 // fillNamespaceAppProxyStatus fills each AppHealth with the proxy status of each workload
-func fillNamespaceAppProxyStatus(allHealth models.NamespaceAppHealth, proxyStatuses map[string][]models.ProxyStatus) {
+func fillNamespaceAppProxyStatus(allHealth models.NamespaceAppHealth, proxyStatuses map[string]int32) {
 	for _, appHealth := range allHealth {
 		fillAppProxyStatus(*appHealth, proxyStatuses)
 	}
 }
 
 // fillNamespaceWorkloadProxyStatus fills each WorkloadHealth with the proxy status of its workload
-func fillNamespaceWorkloadProxyStatus(allHealth models.NamespaceWorkloadHealth, proxyStatuses map[string][]models.ProxyStatus) {
+func fillNamespaceWorkloadProxyStatus(allHealth models.NamespaceWorkloadHealth, proxyStatuses map[string]int32) {
 	for workloadName, workloadHealth := range allHealth {
-		workloadHealth.WorkloadStatus.ProxyStatus =	proxyStatuses[workloadName]
+		workloadHealth.WorkloadStatus.SyncedProxies = proxyStatuses[workloadName]
 	}
 }
 

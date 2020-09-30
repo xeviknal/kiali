@@ -21,7 +21,7 @@ type ServiceHealth struct {
 // AppHealth contains aggregated health from various sources, for a given app
 type AppHealth struct {
 	WorkloadStatuses []*WorkloadStatus `json:"workloadStatuses"`
-	Requests         RequestHealth    `json:"requests"`
+	Requests         RequestHealth     `json:"requests"`
 }
 
 func NewEmptyRequestHealth() RequestHealth {
@@ -53,7 +53,7 @@ func EmptyWorkloadHealth() *WorkloadHealth {
 // WorkloadHealth contains aggregated health from various sources, for a given workload
 type WorkloadHealth struct {
 	WorkloadStatus *WorkloadStatus `json:"workloadStatus"`
-	Requests       RequestHealth  `json:"requests"`
+	Requests       RequestHealth   `json:"requests"`
 }
 
 // WorkloadStatus gives
@@ -66,11 +66,11 @@ type WorkloadHealth struct {
 // 	desired = 1, current = 10, available = 0 would means that a user scaled down a workload from 10 to 1
 //  but in the operaton 10 pods showed problems, so no pod is available/ready but user will see 10 pods under a workload
 type WorkloadStatus struct {
-	Name              string        `json:"name"`
-	DesiredReplicas   int32         `json:"desiredReplicas"`
-	CurrentReplicas   int32         `json:"currentReplicas"`
-	AvailableReplicas int32         `json:"availableReplicas"`
-	ProxyStatus       []ProxyStatus `json:"proxyStatus"`
+	Name              string `json:"name"`
+	DesiredReplicas   int32  `json:"desiredReplicas"`
+	CurrentReplicas   int32  `json:"currentReplicas"`
+	AvailableReplicas int32  `json:"availableReplicas"`
+	SyncedProxies     int32  `json:"syncedProxies"`
 }
 
 type ProxyStatuses string

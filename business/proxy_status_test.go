@@ -9,7 +9,6 @@ import (
 	"github.com/kiali/kiali/config"
 	"github.com/kiali/kiali/kubernetes"
 	"github.com/kiali/kiali/kubernetes/kubetest"
-	"github.com/kiali/kiali/models"
 )
 
 func TestGetWorkloadProxyStatusWithoutError(t *testing.T) {
@@ -40,9 +39,9 @@ func TestGetWorkloadProxyStatusWithoutError(t *testing.T) {
 	}, nil)
 
 	layer := ProxyStatus{k8s: k8s}
-	proxyStatus, err := layer.GetWorkloadProxyStatus(workload, namespace)
+	proxiesSynced, err := layer.GetWorkloadProxyStatus(workload, namespace)
 
-	assert.Len(proxyStatus, 0)
+	assert.Equal(int32(1), proxiesSynced)
 	assert.NoError(err)
 }
 
@@ -74,12 +73,10 @@ func TestGetWorkloadProxyStatusWithError(t *testing.T) {
 	}, nil)
 
 	layer := ProxyStatus{k8s: k8s}
-	proxyStatus, err := layer.GetWorkloadProxyStatus(workload, namespace)
+	proxiesSynced, err := layer.GetWorkloadProxyStatus(workload, namespace)
 
 	assert.NoError(err)
-	assert.Len(proxyStatus, 2)
-	assert.Contains(proxyStatus, models.ProxyStatus{Component: "CDS", Status: models.Stale})
-	assert.Contains(proxyStatus, models.ProxyStatus{Component: "RDS", Status: models.StaleNa})
+	assert.Zero(proxiesSynced)
 }
 
 func TestGetWorkloadsProxyStatus(t *testing.T) {
@@ -110,30 +107,25 @@ func TestGetWorkloadsProxyStatus(t *testing.T) {
 			ProxyID:       fmt.Sprintf("reviews-v2-982hashydas-212.%s", namespace),
 			ProxyVersion:  "1.7.1",
 			IstioVersion:  "1.7.1",
+			ClusterSent:   "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
 			ClusterAcked:  "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
-			ClusterSent: "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
-			EndpointSent:   "clusterdifferent",
-			EndpointAcked:  "clusterequals",
-			ListenerSent:  "avaluetthatshouldntmatch",
-			ListenerAcked: "",
+			ListenerSent:  "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
+			ListenerAcked: "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
 			RouteSent:     "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
 			RouteAcked:    "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
+			EndpointSent:  "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
+			EndpointAcked: "zI1yscSI0RY=e9dbc143-4e20-44ec-aa5e-3c0b8097f21a",
 		}},
 	}, nil)
 
 	layer := ProxyStatus{k8s: k8s}
-	proxyStatus, err := layer.GetWorkloadsProxyStatus(namespace, fakeMultipleWorkloadStatus())
+	proxiesSynced, err := layer.GetWorkloadsProxyStatus(namespace, fakeMultipleWorkloadStatus())
 
 	assert.NoError(err)
-	assert.Len(proxyStatus, 2)
-	assert.Contains(proxyStatus["reviews-v1-982hashydas-212"], models.ProxyStatus{Component: "CDS", Status: models.Stale})
-	assert.Contains(proxyStatus["reviews-v1-982hashydas-212"], models.ProxyStatus{Component: "RDS", Status: models.StaleNa})
-
-	assert.Contains(proxyStatus["reviews-v2-982hashydas-212"], models.ProxyStatus{Component: "EDS", Status: models.Stale})
-	assert.Contains(proxyStatus["reviews-v2-982hashydas-212"], models.ProxyStatus{Component: "LDS", Status: models.StaleNa})
-
+	assert.Equal(int32(0), proxiesSynced["reviews-v1-982hashydas-212"])
+	assert.Equal(int32(1), proxiesSynced["reviews-v2-982hashydas-212"])
 }
 
 func fakeMultipleWorkloadStatus() []string {
-	return []string{ "reviews-v1-982hashydas-212", "reviews-v2-982hashydas-212" }
+	return []string{"reviews-v1-982hashydas-212", "reviews-v2-982hashydas-212"}
 }
