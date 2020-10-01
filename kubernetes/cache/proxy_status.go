@@ -43,6 +43,8 @@ func (c *kialiCacheImpl) SetProxyStatus(proxyStatus []*kubernetes.ProxyStatus) {
 	defer c.proxyStatusLock.Unlock()
 	c.proxyStatusLock.Lock()
 	if len(proxyStatus) > 0 {
+		timeNow := time.Now()
+		c.proxyStatusCreated = &timeNow
 		for _, ps := range proxyStatus {
 			if ps != nil {
 				// Expected format <pod-name>.<namespace>
