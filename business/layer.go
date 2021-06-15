@@ -137,6 +137,10 @@ func NewWithBackends(k8s kubernetes.ClientInterface, prom prometheus.ClientInter
 	return temporaryLayer
 }
 
+func SetCache(cache *cache.KialiCache) {
+	kialiCache = *cache
+}
+
 func Stop() {
 	if kialiCache != nil {
 		kialiCache.Stop()
