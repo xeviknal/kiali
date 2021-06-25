@@ -1090,6 +1090,27 @@ func NewRoutes() (r *Routes) {
 			handlers.GraphNamespaces,
 			true,
 		},
+		{
+			"RankingLoad",
+			"GET",
+			"/api/namespaces/rankings/load",
+			handlers.RankingLoad,
+			true,
+		},
+		{
+			"RankingMostTimeConsumingEdges",
+			"GET",
+			"/api/namespaces/rankings/most_times_consuming",
+			handlers.RankingMostTimeConsumingEdges,
+			true,
+		},
+		{
+			"RankingSlowEdges",
+			"GET",
+			"/api/namespaces/rankings/slow_edges",
+			handlers.RankingSlowEdges,
+			true,
+		},
 		// swagger:route GET /namespaces/{namespace}/aggregates/{aggregate}/{aggregateValue}/graph graphs graphAggregate
 		// ---
 		// The backing JSON for an aggregate node detail graph. (supported graphTypes: app | versionedApp | workload)

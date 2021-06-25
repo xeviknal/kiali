@@ -26,6 +26,7 @@ type Layer struct {
 	Namespace      NamespaceService
 	OpenshiftOAuth OpenshiftOAuthService
 	ProxyStatus    ProxyStatusService
+	Rankings 	   RankingService
 	RegistryStatus RegistryStatusService
 	Svc            SvcService
 	TLS            TLSService
@@ -133,6 +134,7 @@ func NewWithBackends(k8s kubernetes.ClientInterface, prom prometheus.ClientInter
 	temporaryLayer.TokenReview = NewTokenReview(k8s)
 	temporaryLayer.Validations = IstioValidationsService{k8s: k8s, businessLayer: temporaryLayer}
 	temporaryLayer.Workload = WorkloadService{k8s: k8s, prom: prom, businessLayer: temporaryLayer}
+	temporaryLayer.Rankings = RankingService{k8s:k8s, prom:prom, businessLayer:temporaryLayer}
 
 	return temporaryLayer
 }
