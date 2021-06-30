@@ -1,0 +1,784 @@
+[
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "details",
+    "Namespace": "bookinfo",
+    "Labels": {
+      "app": "details",
+      "service": "details"
+    },
+    "UID": "istio://bookinfo/services/details",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "details"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http",
+      "port": 9080,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-09T09:31:33Z",
+  "hostname": "details.bookinfo.svc.cluster.local",
+  "address": "10.107.122.189",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.107.122.189"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "grafana",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app.kubernetes.io/instance": "grafana",
+      "app.kubernetes.io/managed-by": "Helm",
+      "app.kubernetes.io/name": "grafana",
+      "app.kubernetes.io/version": "7.4.3",
+      "helm.sh/chart": "grafana-6.6.3"
+    },
+    "UID": "istio://istio-system/services/grafana",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app.kubernetes.io/instance": "grafana",
+      "app.kubernetes.io/name": "grafana"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "service",
+      "port": 3000,
+      "protocol": "UnsupportedProtocol"
+    }
+  ],
+  "creationTime": "2021-06-08T14:01:05Z",
+  "hostname": "grafana.istio-system.svc.cluster.local",
+  "address": "10.110.95.43",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.110.95.43"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "ingress-nginx-controller-admission",
+    "Namespace": "kube-system",
+    "Labels": {
+      "addonmanager.kubernetes.io/mode": "Reconcile",
+      "app.kubernetes.io/component": "controller",
+      "app.kubernetes.io/instance": "ingress-nginx",
+      "app.kubernetes.io/name": "ingress-nginx"
+    },
+    "UID": "istio://kube-system/services/ingress-nginx-controller-admission",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app.kubernetes.io/component": "controller",
+      "app.kubernetes.io/instance": "ingress-nginx",
+      "app.kubernetes.io/name": "ingress-nginx"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "https-webhook",
+      "port": 443,
+      "protocol": "HTTPS"
+    }
+  ],
+  "creationTime": "2021-06-08T13:41:44Z",
+  "hostname": "ingress-nginx-controller-admission.kube-system.svc.cluster.local",
+  "address": "10.107.149.15",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.107.149.15"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "istio-egressgateway",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app": "istio-egressgateway",
+      "install.operator.istio.io/owning-resource": "unknown",
+      "install.operator.istio.io/owning-resource-namespace": "istio-system",
+      "istio": "egressgateway",
+      "istio.io/rev": "default",
+      "operator.istio.io/component": "EgressGateways",
+      "operator.istio.io/managed": "Reconcile",
+      "operator.istio.io/version": "1.10.0",
+      "release": "istio"
+    },
+    "UID": "istio://istio-system/services/istio-egressgateway",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "istio-egressgateway",
+      "istio": "egressgateway"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http2",
+      "port": 80,
+      "protocol": "HTTP2"
+    },
+    {
+      "name": "https",
+      "port": 443,
+      "protocol": "HTTPS"
+    }
+  ],
+  "creationTime": "2021-06-08T13:42:52Z",
+  "hostname": "istio-egressgateway.istio-system.svc.cluster.local",
+  "address": "10.109.152.82",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.109.152.82"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "istio-ingressgateway",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app": "istio-ingressgateway",
+      "install.operator.istio.io/owning-resource": "unknown",
+      "install.operator.istio.io/owning-resource-namespace": "istio-system",
+      "istio": "ingressgateway",
+      "istio.io/rev": "default",
+      "operator.istio.io/component": "IngressGateways",
+      "operator.istio.io/managed": "Reconcile",
+      "operator.istio.io/version": "1.10.0",
+      "release": "istio"
+    },
+    "UID": "istio://istio-system/services/istio-ingressgateway",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "istio-ingressgateway",
+      "istio": "ingressgateway"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "status-port",
+      "port": 15021,
+      "protocol": "UnsupportedProtocol"
+    },
+    {
+      "name": "http2",
+      "port": 80,
+      "protocol": "HTTP2"
+    },
+    {
+      "name": "https",
+      "port": 443,
+      "protocol": "HTTPS"
+    },
+    {
+      "name": "tcp",
+      "port": 31400,
+      "protocol": "TCP"
+    },
+    {
+      "name": "tls",
+      "port": 15443,
+      "protocol": "TLS"
+    }
+  ],
+  "creationTime": "2021-06-08T13:42:52Z",
+  "hostname": "istio-ingressgateway.istio-system.svc.cluster.local",
+  "address": "10.106.181.249",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.106.181.249"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "istiod",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app": "istiod",
+      "install.operator.istio.io/owning-resource": "unknown",
+      "install.operator.istio.io/owning-resource-namespace": "istio-system",
+      "istio": "pilot",
+      "istio.io/rev": "default",
+      "operator.istio.io/component": "Pilot",
+      "operator.istio.io/managed": "Reconcile",
+      "operator.istio.io/version": "1.10.0",
+      "release": "istio"
+    },
+    "UID": "istio://istio-system/services/istiod",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "istiod",
+      "istio": "pilot"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "grpc-xds",
+      "port": 15010,
+      "protocol": "GRPC"
+    },
+    {
+      "name": "https-dns",
+      "port": 15012,
+      "protocol": "HTTPS"
+    },
+    {
+      "name": "https-webhook",
+      "port": 443,
+      "protocol": "HTTPS"
+    },
+    {
+      "name": "http-monitoring",
+      "port": 15014,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-08T13:42:38Z",
+  "hostname": "istiod.istio-system.svc.cluster.local",
+  "address": "10.107.174.172",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.107.174.172"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "jaeger-collector",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app": "jaeger"
+    },
+    "UID": "istio://istio-system/services/jaeger-collector",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "jaeger"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "jaeger-collector-http",
+      "port": 14268,
+      "protocol": "UnsupportedProtocol"
+    },
+    {
+      "name": "jaeger-collector-grpc",
+      "port": 14250,
+      "protocol": "UnsupportedProtocol"
+    }
+  ],
+  "creationTime": "2021-06-08T14:01:04Z",
+  "hostname": "jaeger-collector.istio-system.svc.cluster.local",
+  "address": "10.99.162.104",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.99.162.104"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "kiali",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app": "kiali",
+      "app.kubernetes.io/instance": "kiali",
+      "app.kubernetes.io/name": "kiali",
+      "app.kubernetes.io/part-of": "kiali",
+      "app.kubernetes.io/version": "dev",
+      "version": "dev"
+    },
+    "UID": "istio://istio-system/services/kiali",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app.kubernetes.io/instance": "kiali",
+      "app.kubernetes.io/name": "kiali"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http",
+      "port": 20001,
+      "protocol": "HTTP"
+    },
+    {
+      "name": "http-metrics",
+      "port": 9090,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-08T14:15:31Z",
+  "hostname": "kiali.istio-system.svc.cluster.local",
+  "address": "10.97.18.81",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.97.18.81"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "kube-dns",
+    "Namespace": "kube-system",
+    "Labels": {
+      "k8s-app": "kube-dns",
+      "kubernetes.io/cluster-service": "true",
+      "kubernetes.io/name": "KubeDNS"
+    },
+    "UID": "istio://kube-system/services/kube-dns",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "k8s-app": "kube-dns"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "dns",
+      "port": 53,
+      "protocol": "UDP"
+    },
+    {
+      "name": "dns-tcp",
+      "port": 53,
+      "protocol": "TCP"
+    },
+    {
+      "name": "metrics",
+      "port": 9153,
+      "protocol": "UnsupportedProtocol"
+    }
+  ],
+  "creationTime": "2021-06-08T13:41:35Z",
+  "hostname": "kube-dns.kube-system.svc.cluster.local",
+  "address": "10.96.0.10",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.96.0.10"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "kubernetes",
+    "Namespace": "default",
+    "Labels": {
+      "component": "apiserver",
+      "provider": "kubernetes"
+    },
+    "UID": "istio://default/services/kubernetes",
+    "ExportTo": null,
+    "LabelSelectors": null,
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "https",
+      "port": 443,
+      "protocol": "HTTPS"
+    }
+  ],
+  "creationTime": "2021-06-08T13:41:34Z",
+  "hostname": "kubernetes.default.svc.cluster.local",
+  "address": "10.96.0.1",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.96.0.1"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "mariadb",
+    "Namespace": "bookinfo",
+    "Labels": null,
+    "UID": "istio://bookinfo/services/mariadb",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "mariadb"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "mysql",
+      "port": 3306,
+      "protocol": "MySQL"
+    }
+  ],
+  "creationTime": "2021-06-10T08:40:07Z",
+  "hostname": "mariadb.bookinfo.svc.cluster.local",
+  "address": "10.105.186.185",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.105.186.185"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "mongodb",
+    "Namespace": "bookinfo",
+    "Labels": {
+      "app": "mongodb",
+      "service": "mongodb"
+    },
+    "UID": "istio://bookinfo/services/mongodb",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "mongodb"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "mongo",
+      "port": 27017,
+      "protocol": "Mongo"
+    }
+  ],
+  "creationTime": "2021-06-09T09:31:34Z",
+  "hostname": "mongodb.bookinfo.svc.cluster.local",
+  "address": "10.101.185.156",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.101.185.156"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "productpage",
+    "Namespace": "bookinfo",
+    "Labels": {
+      "app": "productpage",
+      "service": "productpage"
+    },
+    "UID": "istio://bookinfo/services/productpage",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "productpage"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http",
+      "port": 9080,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-09T09:31:34Z",
+  "hostname": "productpage.bookinfo.svc.cluster.local",
+  "address": "10.106.142.204",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.106.142.204"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "prometheus",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app": "prometheus",
+      "chart": "prometheus-13.6.0",
+      "component": "server",
+      "heritage": "Helm",
+      "release": "prometheus"
+    },
+    "UID": "istio://istio-system/services/prometheus",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "prometheus",
+      "component": "server",
+      "release": "prometheus"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http",
+      "port": 9090,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-08T14:01:04Z",
+  "hostname": "prometheus.istio-system.svc.cluster.local",
+  "address": "10.100.22.220",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.100.22.220"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "ratings-java-svc",
+    "Namespace": "bookinfo",
+    "Labels": {
+      "app": "ratings",
+      "service": "ratings-svc"
+    },
+    "UID": "istio://bookinfo/services/ratings-java-svc",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "ratings-java",
+      "version": "v1"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "wrong-http",
+      "port": 9080,
+      "protocol": "UnsupportedProtocol"
+    }
+  ],
+  "creationTime": "2021-06-10T08:40:07Z",
+  "hostname": "ratings-java-svc.bookinfo.svc.cluster.local",
+  "address": "10.103.149.223",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.103.149.223"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "ratings",
+    "Namespace": "bookinfo",
+    "Labels": {
+      "app": "ratings",
+      "service": "ratings"
+    },
+    "UID": "istio://bookinfo/services/ratings",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "ratings"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http",
+      "port": 9080,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-09T09:31:33Z",
+  "hostname": "ratings.bookinfo.svc.cluster.local",
+  "address": "10.96.15.142",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.96.15.142"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "registry",
+    "Namespace": "kube-system",
+    "Labels": {
+      "addonmanager.kubernetes.io/mode": "Reconcile",
+      "kubernetes.io/minikube-addons": "registry"
+    },
+    "UID": "istio://kube-system/services/registry",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "actual-registry": "true",
+      "kubernetes.io/minikube-addons": "registry"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http",
+      "port": 80,
+      "protocol": "HTTP"
+    },
+    {
+      "name": "https",
+      "port": 443,
+      "protocol": "HTTPS"
+    }
+  ],
+  "creationTime": "2021-06-08T13:42:17Z",
+  "hostname": "registry.kube-system.svc.cluster.local",
+  "address": "10.111.17.91",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.111.17.91"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "reviews",
+    "Namespace": "bookinfo",
+    "Labels": {
+      "app": "reviews",
+      "service": "reviews"
+    },
+    "UID": "istio://bookinfo/services/reviews",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "reviews"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http",
+      "port": 9080,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-09T09:31:33Z",
+  "hostname": "reviews.bookinfo.svc.cluster.local",
+  "address": "10.110.40.192",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.110.40.192"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "tracing",
+    "Namespace": "istio-system",
+    "Labels": {
+      "app": "jaeger"
+    },
+    "UID": "istio://istio-system/services/tracing",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "jaeger"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http-query",
+      "port": 80,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-08T14:01:04Z",
+  "hostname": "tracing.istio-system.svc.cluster.local",
+  "address": "10.109.170.76",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.109.170.76"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{
+  "Attributes": {
+    "ServiceRegistry": "Kubernetes",
+    "Name": "zipkin",
+    "Namespace": "istio-system",
+    "Labels": {
+      "name": "zipkin"
+    },
+    "UID": "istio://istio-system/services/zipkin",
+    "ExportTo": null,
+    "LabelSelectors": {
+      "app": "jaeger"
+    },
+    "ClusterExternalAddresses": null,
+    "ClusterExternalPorts": null
+  },
+  "ports": [
+    {
+      "name": "http-query",
+      "port": 9411,
+      "protocol": "HTTP"
+    }
+  ],
+  "creationTime": "2021-06-08T14:01:04Z",
+  "hostname": "zipkin.istio-system.svc.cluster.local",
+  "address": "10.111.6.208",
+  "Mutex": {},
+  "cluster-vips": {
+    "Kubernetes": "10.111.6.208"
+  },
+  "Resolution": 0,
+  "MeshExternal": false
+},
+{}]

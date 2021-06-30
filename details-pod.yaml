@@ -1,0 +1,457 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubectl.kubernetes.io/default-container: details
+    kubectl.kubernetes.io/default-logs-container: details
+    prometheus.io/path: /stats/prometheus
+    prometheus.io/port: "15020"
+    prometheus.io/scrape: "true"
+    sidecar.istio.io/status: '{"initContainers":["istio-init"],"containers":["istio-proxy"],"volumes":["istio-envoy","istio-data","istio-podinfo","istio-token","istiod-ca-cert"],"imagePullSecrets":null}'
+  creationTimestamp: "2021-06-09T09:31:33Z"
+  generateName: details-v1-79f774bdb9-
+  labels:
+    app: details
+    istio.io/rev: default
+    pod-template-hash: 79f774bdb9
+    security.istio.io/tlsMode: istio
+    service.istio.io/canonical-name: details
+    service.istio.io/canonical-revision: v1
+    version: v1
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:generateName: {}
+        f:labels:
+          .: {}
+          f:app: {}
+          f:pod-template-hash: {}
+          f:version: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"10d64acc-d778-47bd-8439-eeeb19a8cb5d"}:
+            .: {}
+            f:apiVersion: {}
+            f:blockOwnerDeletion: {}
+            f:controller: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        f:containers:
+          k:{"name":"details"}:
+            .: {}
+            f:image: {}
+            f:imagePullPolicy: {}
+            f:name: {}
+            f:ports:
+              .: {}
+              k:{"containerPort":9080,"protocol":"TCP"}:
+                .: {}
+                f:containerPort: {}
+                f:protocol: {}
+            f:resources: {}
+            f:securityContext:
+              .: {}
+              f:runAsUser: {}
+            f:terminationMessagePath: {}
+            f:terminationMessagePolicy: {}
+        f:dnsPolicy: {}
+        f:enableServiceLinks: {}
+        f:restartPolicy: {}
+        f:schedulerName: {}
+        f:securityContext: {}
+        f:serviceAccount: {}
+        f:serviceAccountName: {}
+        f:terminationGracePeriodSeconds: {}
+    manager: kube-controller-manager
+    operation: Update
+    time: "2021-06-09T09:31:33Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:conditions:
+          k:{"type":"ContainersReady"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Initialized"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Ready"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+        f:containerStatuses: {}
+        f:hostIP: {}
+        f:initContainerStatuses: {}
+        f:phase: {}
+        f:podIP: {}
+        f:podIPs:
+          .: {}
+          k:{"ip":"172.17.0.19"}:
+            .: {}
+            f:ip: {}
+        f:startTime: {}
+    manager: kubelet
+    operation: Update
+    time: "2021-06-14T10:57:07Z"
+  name: details-v1-79f774bdb9-mtvsz
+  namespace: bookinfo
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: details-v1-79f774bdb9
+    uid: 10d64acc-d778-47bd-8439-eeeb19a8cb5d
+  resourceVersion: "165638"
+  uid: 6b9faadb-ab26-4f7e-8a02-52e0d5effe60
+spec:
+  containers:
+  - image: docker.io/istio/examples-bookinfo-details-v1:1.16.2
+    imagePullPolicy: IfNotPresent
+    name: details
+    ports:
+    - containerPort: 9080
+      protocol: TCP
+    resources: {}
+    securityContext:
+      runAsUser: 1000
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: bookinfo-details-token-chtrp
+      readOnly: true
+  - args:
+    - proxy
+    - sidecar
+    - --domain
+    - $(POD_NAMESPACE).svc.cluster.local
+    - --serviceCluster
+    - details.$(POD_NAMESPACE)
+    - --proxyLogLevel=warning
+    - --proxyComponentLogLevel=misc:error
+    - --log_output_level=default:info
+    - --concurrency
+    - "2"
+    env:
+    - name: JWT_POLICY
+      value: third-party-jwt
+    - name: PILOT_CERT_PROVIDER
+      value: istiod
+    - name: CA_ADDR
+      value: istiod.istio-system.svc:15012
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: INSTANCE_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    - name: SERVICE_ACCOUNT
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: spec.serviceAccountName
+    - name: HOST_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.hostIP
+    - name: CANONICAL_SERVICE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['service.istio.io/canonical-name']
+    - name: CANONICAL_REVISION
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['service.istio.io/canonical-revision']
+    - name: PROXY_CONFIG
+      value: |
+        {}
+    - name: ISTIO_META_POD_PORTS
+      value: |-
+        [
+            {"containerPort":9080,"protocol":"TCP"}
+        ]
+    - name: ISTIO_META_APP_CONTAINERS
+      value: details
+    - name: ISTIO_META_CLUSTER_ID
+      value: Kubernetes
+    - name: ISTIO_META_INTERCEPTION_MODE
+      value: REDIRECT
+    - name: ISTIO_META_WORKLOAD_NAME
+      value: details-v1
+    - name: ISTIO_META_OWNER
+      value: kubernetes://apis/apps/v1/namespaces/bookinfo/deployments/details-v1
+    - name: ISTIO_META_MESH_ID
+      value: cluster.local
+    - name: TRUST_DOMAIN
+      value: cluster.local
+    image: docker.io/istio/proxyv2:1.10.0
+    imagePullPolicy: IfNotPresent
+    name: istio-proxy
+    ports:
+    - containerPort: 15090
+      name: http-envoy-prom
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 30
+      httpGet:
+        path: /healthz/ready
+        port: 15021
+        scheme: HTTP
+      initialDelaySeconds: 1
+      periodSeconds: 2
+      successThreshold: 1
+      timeoutSeconds: 3
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1Gi
+      requests:
+        cpu: 10m
+        memory: 40Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+      runAsGroup: 1337
+      runAsNonRoot: true
+      runAsUser: 1337
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/istio
+      name: istiod-ca-cert
+    - mountPath: /var/lib/istio/data
+      name: istio-data
+    - mountPath: /etc/istio/proxy
+      name: istio-envoy
+    - mountPath: /var/run/secrets/tokens
+      name: istio-token
+    - mountPath: /etc/istio/pod
+      name: istio-podinfo
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: bookinfo-details-token-chtrp
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  initContainers:
+  - args:
+    - istio-iptables
+    - -p
+    - "15001"
+    - -z
+    - "15006"
+    - -u
+    - "1337"
+    - -m
+    - REDIRECT
+    - -i
+    - '*'
+    - -x
+    - ""
+    - -b
+    - '*'
+    - -d
+    - 15090,15021,15020
+    image: docker.io/istio/proxyv2:1.10.0
+    imagePullPolicy: IfNotPresent
+    name: istio-init
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1Gi
+      requests:
+        cpu: 10m
+        memory: 40Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: false
+      runAsGroup: 0
+      runAsNonRoot: false
+      runAsUser: 0
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: bookinfo-details-token-chtrp
+      readOnly: true
+  nodeName: minikube
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: bookinfo-details
+  serviceAccountName: bookinfo-details
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - emptyDir:
+      medium: Memory
+    name: istio-envoy
+  - emptyDir: {}
+    name: istio-data
+  - downwardAPI:
+      defaultMode: 420
+      items:
+      - fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels
+        path: labels
+      - fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.annotations
+        path: annotations
+      - path: cpu-limit
+        resourceFieldRef:
+          containerName: istio-proxy
+          divisor: 1m
+          resource: limits.cpu
+      - path: cpu-request
+        resourceFieldRef:
+          containerName: istio-proxy
+          divisor: 1m
+          resource: requests.cpu
+    name: istio-podinfo
+  - name: istio-token
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          audience: istio-ca
+          expirationSeconds: 43200
+          path: istio-token
+  - configMap:
+      defaultMode: 420
+      name: istio-ca-root-cert
+    name: istiod-ca-cert
+  - name: bookinfo-details-token-chtrp
+    secret:
+      defaultMode: 420
+      secretName: bookinfo-details-token-chtrp
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-09T09:31:36Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-14T10:57:07Z"
+    message: 'containers with unready status: [istio-proxy]'
+    reason: ContainersNotReady
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-14T10:57:07Z"
+    message: 'containers with unready status: [istio-proxy]'
+    reason: ContainersNotReady
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2021-06-09T09:31:33Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://a7d218ef2ad63031c9827f7dfa716dacb6bdd8efda3d4729a7dd207b16dcc54c
+    image: istio/examples-bookinfo-details-v1:1.16.2
+    imageID: docker-pullable://istio/examples-bookinfo-details-v1@sha256:18e54f81689035019e1ac78f6d2e6483fcf1d94072d047315ab193cb2ab89ae5
+    lastState:
+      terminated:
+        containerID: docker://f6c8bb9b71154467c835f389901869cfb757eeb8366d230be589106345185457
+        exitCode: 255
+        finishedAt: "2021-06-14T06:50:10Z"
+        reason: Error
+        startedAt: "2021-06-11T10:54:17Z"
+    name: details
+    ready: true
+    restartCount: 3
+    started: true
+    state:
+      running:
+        startedAt: "2021-06-14T06:50:52Z"
+  - containerID: docker://f18245579771c71b5ac7cb6d57cd0c830371d68dfed985a5ed2d568bc52810ac
+    image: istio/proxyv2:1.10.0
+    imageID: docker-pullable://istio/proxyv2@sha256:88c6c693e67a0f2492191a0e7d8020ddc85603bfc704f252655cb9eb5eeb3f58
+    lastState:
+      terminated:
+        containerID: docker://70b1d04c17f9f97a969ec89bb6728d4dd6e3c6c4f20c2ba4c4e75f7a8a0bef5f
+        exitCode: 255
+        finishedAt: "2021-06-14T06:50:10Z"
+        reason: Error
+        startedAt: "2021-06-11T10:54:18Z"
+    name: istio-proxy
+    ready: false
+    restartCount: 3
+    started: true
+    state:
+      running:
+        startedAt: "2021-06-14T06:50:53Z"
+  hostIP: 192.168.39.75
+  initContainerStatuses:
+  - containerID: docker://3a7b76ce715994ce2656b79692e9cb6b36e0aab13cad1d753534134934f2a7c3
+    image: istio/proxyv2:1.10.0
+    imageID: docker-pullable://istio/proxyv2@sha256:88c6c693e67a0f2492191a0e7d8020ddc85603bfc704f252655cb9eb5eeb3f58
+    lastState: {}
+    name: istio-init
+    ready: true
+    restartCount: 3
+    state:
+      terminated:
+        containerID: docker://3a7b76ce715994ce2656b79692e9cb6b36e0aab13cad1d753534134934f2a7c3
+        exitCode: 0
+        finishedAt: "2021-06-14T06:50:50Z"
+        reason: Completed
+        startedAt: "2021-06-14T06:50:50Z"
+  phase: Running
+  podIP: 172.17.0.19
+  podIPs:
+  - ip: 172.17.0.19
+  qosClass: Burstable
+  startTime: "2021-06-09T09:31:33Z"
