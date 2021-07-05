@@ -42,7 +42,7 @@ type K8SClientInterface interface {
 	GetNamespaces(labelSelector string) ([]core_v1.Namespace, error)
 	GetPod(namespace, name string) (*core_v1.Pod, error)
 	GetPodLogs(namespace, name string, opts *core_v1.PodLogOptions) (*PodLogs, error)
-	GetPodProxy(namespace, name, path string) ([]byte, error)
+	GetPodProxy(namespace, name string, port int, path string) ([]byte, error)
 	GetPods(namespace, labelSelector string) ([]core_v1.Pod, error)
 	GetReplicationControllers(namespace string) ([]core_v1.ReplicationController, error)
 	GetReplicaSets(namespace string) ([]apps_v1.ReplicaSet, error)
@@ -356,13 +356,13 @@ func (in *K8SClient) GetPodLogs(namespace, name string, opts *core_v1.PodLogOpti
 	return &PodLogs{Logs: buf.String()}, nil
 }
 
-func (in *K8SClient) GetPodProxy(namespace, name, path string) ([]byte, error) {
+func (in *K8SClient) GetPodProxy(namespace, name string, port int, path string) ([]byte, error) {
 	return in.k8s.CoreV1().RESTClient().Get().
 		Timeout(httputil.DefaultTimeout).
 		Namespace(namespace).
 		Resource("pods").
+		Name(fmt.Sprintf("%s:%d", name, port)).
 		SubResource("proxy").
-		Name(name).
 		Suffix(path).
 		DoRaw(in.ctx)
 }

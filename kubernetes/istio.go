@@ -1,15 +1,9 @@
 package kubernetes
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"regexp"
-	"strings"
-	"sync"
-	"time"
-
 	"gopkg.in/yaml.v2"
 	core_v1 "k8s.io/api/core/v1"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -17,11 +11,12 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
+	"regexp"
+	"strings"
+	"sync"
 
 	"github.com/kiali/kiali/config"
 	"github.com/kiali/kiali/log"
-	"github.com/kiali/kiali/util/config_dump"
-	"github.com/kiali/kiali/util/httputil"
 )
 
 var (
@@ -215,7 +210,7 @@ func (in *K8SClient) getIstiodDebugStatus(debugPath string) (map[string][]byte, 
 
 	// Check if the kube-api has proxy access to pods in the istio-system
 	// https://github.com/kiali/kiali/issues/3494#issuecomment-772486224
-	_, err = in.GetPodProxy(c.IstioNamespace, istiods[0].Name, "/ready")
+	_, err = in.GetPodProxy(c.IstioNamespace, istiods[0].Name, 8080, "ready")
 	if err != nil {
 		return nil, fmt.Errorf("unable to proxy Istiod pods. " +
 			"Make sure your Kubernetes API server has access to the Istio control plane through 8080 port")
@@ -231,7 +226,7 @@ func (in *K8SClient) getIstiodDebugStatus(debugPath string) (map[string][]byte, 
 		go func(name, namespace string) {
 			defer wg.Done()
 
-			res, err := in.GetPodProxy(namespace, name, debugPath)
+			res, err := in.GetPodProxy(namespace, name, 15014, debugPath)
 			if err != nil {
 				errChan <- fmt.Errorf("%s: %s", name, err.Error())
 			} else {
@@ -267,7 +262,7 @@ func (in *K8SClient) getIstiodDebugStatus(debugPath string) (map[string][]byte, 
 }
 
 func (in *K8SClient) GetProxyStatus() ([]*ProxyStatus, error) {
-	synczPath := "/debug/syncz"
+	synczPath := "debug/syncz"
 	result, err := in.getIstiodDebugStatus(synczPath)
 	if err != nil {
 		return nil, err
@@ -276,7 +271,7 @@ func (in *K8SClient) GetProxyStatus() ([]*ProxyStatus, error) {
 }
 
 func (in *K8SClient) GetRegistryStatus() ([]*RegistryStatus, error) {
-	registryzPath := "/debug/registryz"
+	registryzPath := "debug/registryz"
 	result, err := in.getIstiodDebugStatus(registryzPath)
 	if err != nil {
 		return nil, err
@@ -318,7 +313,7 @@ func parseRegistryServices(registries map[string][]byte) ([]*RegistryStatus, err
 
 func (in *K8SClient) GetConfigDump(namespace, podName string) (*ConfigDump, error) {
 	// Fetching the config_dump data, raw.
-	resp, err := in.EnvoyForward(namespace, podName, "/config_dump")
+	resp, err := in.EnvoyForward(namespace, podName, "config_dump")
 	if err != nil {
 		log.Errorf("Error fetching config_map: %v", err)
 		return nil, err
@@ -334,47 +329,7 @@ func (in *K8SClient) GetConfigDump(namespace, podName string) (*ConfigDump, erro
 }
 
 func (in *K8SClient) EnvoyForward(namespace, podName, path string) ([]byte, error) {
-	writer := new(bytes.Buffer)
-
-	clientConfig, err := ConfigClient()
-	if err != nil {
-		log.Errorf("Error getting Kubernetes Client config: %v", err)
-		return nil, err
-	}
-
-	// First try whether the pod exist or not
-	_, err = in.GetPod(namespace, podName)
-	if err != nil {
-		log.Errorf("Couldn't fetch the Pod: %v", err)
-		return nil, err
-	}
-
-	// Building the port mapping local:target port
-	envoyLocalPort := config.Get().ExternalServices.Istio.EnvoyAdminLocalPort
-	portMap := fmt.Sprintf("%d:15000", envoyLocalPort)
-
-	// Create a Port Forwarder
-	f, err := config_dump.NewPortForwarder(in.k8s.CoreV1().RESTClient(), clientConfig,
-		namespace, podName, "localhost", portMap, writer)
-	if err != nil {
-		return nil, err
-	}
-
-	// Start the forwarding
-	if err := f.Start(); err != nil {
-		return nil, err
-	}
-
-	// Defering the finish of the port-forwarding
-	defer f.Stop()
-
-	// Ready to create a request
-	resp, code, err := httputil.HttpGet(fmt.Sprintf("http://localhost:%d%s", envoyLocalPort, path), nil, 10*time.Second)
-	if code >= 400 {
-		return resp, fmt.Errorf("error fetching the /config_dump for the Envoy. Response code: %d", code)
-	}
-
-	return resp, err
+	return in.GetPodProxy(namespace, podName, 15000, path)
 }
 
 func (in *K8SClient) hasNetworkingResource(resource string) bool {
